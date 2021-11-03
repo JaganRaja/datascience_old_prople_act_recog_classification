@@ -2,9 +2,4 @@
 .ipynb_checkpoints/
 __pycache__/
 data/
-*.html
-
-
-
-
-
+research/*.html

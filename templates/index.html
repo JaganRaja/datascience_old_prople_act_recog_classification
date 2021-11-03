@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<title>Search Page</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="content">
+    <h1 style="text-align: center">old people activity prediction</h1>
+
+    <div class="form">
+        <form action="/predict_activity" method="POST">
+            <label for="time(s)">time(s):</label><br>
+            <input type="number" name="time(s)" id="time(s)" placeholder="time(s)" step="0.25" value="37.75"><br>
+            <label for="frontal_axis">frontal_axis:</label><br>
+            <input type="number" name="frontal_axis" id="frontal_axis" placeholder="frontal_axis" step="0.000001" value="1.069400"><br>
+            <label for="vertical_axis">vertical_axis:</label><br>
+            <input type="number" name="vertical_axis" id="vertical_axis" placeholder="vertical_axis" step="0.000001" value="0.296270"><br>
+            <label for="lateral_axis">lateral_axis:</label><br>
+            <input type="number" name="lateral_axis" id="lateral_axis" placeholder="lateral_axis" step="0.000001" value="-0.013684"><br>
+            <label for="antenna_id">antenna_id:</label><br>
+            <input type="number" name="antenna_id" id="antenna_id" placeholder="antenna_id" step="1" min="1" value="4"><br>
+            <label for="rssi">rssi:</label><br>
+            <input type="number" name="rssi" id="rssi"placeholder="rssi" step="0.5" value="-67.0"><br>
+            <label for="phase)">phase:</label><br>
+            <input type="number" name="phase" id="phase" placeholder="phase"step="0.000001" value="1.032400"><br>
+            <label for="frequency">frequency:</label><br>
+            <input type="number" name="frequency" id="frequency" placeholder="frequency" step="0.005" value="925.75"><br>
+            <label for="gender">gender:</label><br>
+            <select name="gender" id="gender">
+                <option value="M">Male</option>
+                <option value="F">No</option>
+            </select>
+        </br>
+            <input class="submit_button" type="submit" value="Predict">
+        </form>
+    </div>
+</div>
+{% endblock %}

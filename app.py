@@ -15,8 +15,8 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])  # route to display the home page
 @cross_origin()
-def hello():
-    return "Hello, World!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+def homePage():
+    return render_template("index.html")
 
 
 @app.route('/predict_activity', methods=['POST'])
@@ -24,10 +24,36 @@ def hello():
 def predict():
     if request.method == 'POST':
         try:
-            json_ = operation = request.json
+            #json_ = request.json
+
+            # reading the inputs given by the user
+            time = float(request.form['time(s)'])
+            frontal_axis = float(request.form['frontal_axis'])
+            vertical_axis = float(request.form['vertical_axis'])
+            lateral_axis = float(request.form['lateral_axis'])
+            antenna_id = float(request.form['antenna_id'])
+            rssi = float(request.form['rssi'])
+            phase = float(request.form['phase'])
+            frequency = float(request.form['frequency'])
+            gender = request.form['gender']
+
+            # making the iput as dictionary
+            # key --> column name
+            # value --> user given value
+            value_dict = {
+                "time(s)": time,
+                "frontal_axis": frontal_axis,
+                "vertical_axis": vertical_axis,
+                "lateral_axis": lateral_axis,
+                "antenna_id": antenna_id,
+                "rssi": rssi,
+                "phase": phase,
+                "frequency": frequency,
+                "gender": gender
+            }
 
             # load as dataframe
-            query_df = pd.DataFrame([json_])
+            query_df = pd.DataFrame([value_dict])
 
             # data preprocessing - transform the new data
             # apply encoding to 'gender' column
@@ -40,10 +66,14 @@ def predict():
             pred_val = int(activity_prediction[0])
 
             # display the results
+            print('prediction is', pred_val)
             # return jsonify(int(activity_prediction[0]))
             # return jsonify({'activity_prediction': int(activity_prediction[0])})
-            return jsonify({'activity_prediction': {pred_val: activity_label[pred_val]}})
+            # return jsonify({'activity_prediction': {pred_val: activity_label[pred_val]}})
             # return ({'activity_prediction': {pred_val: activity_label[pred_val]}})
+
+            # showing the prediction results in a UI
+            return render_template('results.html', prediction=activity_label[pred_val])
         except Exception as e:
             print('The Exception message is: ', e)
             return 'something is wrong'
@@ -66,10 +96,10 @@ if __name__ == '__main__':
         print('standard scaler loaded')
 
         activity_label = {
-            1: "sit on bed",
-            2: "sit on chair",
-            3: "lying",
-            4: "ambulating"
+            1: "Sit on bed",
+            2: "Sit on chair",
+            3: "Lying",
+            4: "Ambulating"
         }
     except Exception as e:
         print('The Exception message is: ', e)
