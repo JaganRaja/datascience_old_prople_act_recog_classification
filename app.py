@@ -105,4 +105,4 @@ if __name__ == '__main__':
         print('The Exception message is: ', e)
         print('Error in loading model')
 
-    app.run(port=8080, debug=True)  # running the app
+    app.run(port=8000, debug=True)  # running the app
