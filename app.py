@@ -24,8 +24,8 @@ def homePage():
 def predict():
     if request.method == 'POST':
         try:
-            #json_ = request.json
-
+            # to get all json values from postman
+            # json_ = request.json
             # reading the inputs given by the user
             time = float(request.form['time(s)'])
             frontal_axis = float(request.form['frontal_axis'])
@@ -55,9 +55,33 @@ def predict():
             # load as dataframe
             query_df = pd.DataFrame([value_dict])
 
+            # types of activities
+            activity_label = {
+                1: "Sit on bed",
+                2: "Sit on chair",
+                3: "Lying",
+                4: "Ambulating"
+            }
+
+            # LOADING MODELS
+
+            # Load "people_activity_recog_classification.sav"
+            model = pickle.load(
+                open("people_activity_recog_classification.pkl", 'rb'))
+            #print('Model loaded')
+
+            # Load "encoder_gender.sav"
+            encoder_obj = pickle.load(open("encoder_gender.pkl", 'rb'))
+            #print('encoder loaded')
+
+            # Load "standard_scaler.sav"
+            standard_scaler_obj = pickle.load(
+                open("standard_scaler.pkl", 'rb'))
+            #print('standard scaler loaded')
+
             # data preprocessing - transform the new data
             # apply encoding to 'gender' column
-            query_df['gender'] = enoder_obj.transform(query_df[['gender']])
+            query_df['gender'] = encoder_obj.transform(query_df[['gender']])
             # apply StandardScaler to features
             query_df_scaled = standard_scaler_obj.transform(query_df)
             # predict
@@ -66,43 +90,17 @@ def predict():
             pred_val = int(activity_prediction[0])
 
             # display the results
-            print('prediction is', pred_val)
+            #print('prediction is', pred_val)
             # return jsonify(int(activity_prediction[0]))
-            # return jsonify({'activity_prediction': int(activity_prediction[0])})
-            # return jsonify({'activity_prediction': {pred_val: activity_label[pred_val]}})
             # return ({'activity_prediction': {pred_val: activity_label[pred_val]}})
 
             # showing the prediction results in a UI
             return render_template('results.html', prediction=activity_label[pred_val])
         except Exception as e:
-            print('The Exception message is: ', e)
+            #print('The Exception message is: ', e)
             return str(e)
 
 
 if __name__ == '__main__':
-
-    try:
-        # Load "people_activity_recog_classification.sav"
-        model = pickle.load(
-            open("people_activity_recog_classification.pkl", 'rb'))
-        print('Model loaded')
-
-        # Load "encoder_gender.sav"
-        enoder_obj = pickle.load(open("encoder_gender.pkl", 'rb'))
-        print('encoder loaded')
-
-        # Load "standard_scaler.sav"
-        standard_scaler_obj = pickle.load(open("standard_scaler.pkl", 'rb'))
-        print('standard scaler loaded')
-
-        activity_label = {
-            1: "Sit on bed",
-            2: "Sit on chair",
-            3: "Lying",
-            4: "Ambulating"
-        }
-    except Exception as e:
-        print('The Exception message is: ', e)
-        print('Error in loading model')
 
     app.run(port=8000, debug=True)  # running the app
