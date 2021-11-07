@@ -19,7 +19,7 @@ def homePage():
     return render_template("index.html")
 
 
-@app.route('/predict_activity', methods=['POST'])
+@app.route('/predict', methods=['POST'])
 @cross_origin()
 def predict():
     if request.method == 'POST':
@@ -76,7 +76,7 @@ def predict():
             return render_template('results.html', prediction=activity_label[pred_val])
         except Exception as e:
             print('The Exception message is: ', e)
-            return 'something is wrong'
+            return str(e)
 
 
 if __name__ == '__main__':
